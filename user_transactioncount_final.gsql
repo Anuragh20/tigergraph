@@ -1,0 +1,13 @@
+CREATE QUERY user_transactioncount(/* Parameters here */) FOR GRAPH louvien syntax v2 {  
+ MapAccum<VERTEX<user>,INT>@map;
+  inital_users = {user.*};
+  transactions_list = Select t from inital_users:s - (transactions_edge)-       transactions:t -(transactions_edge)-user:z where s.cont_id < z.cont_id 
+  ACCUM s.@map += (z-> 1) 
+  POST-ACCUM 
+  FOREACH (k,v) in s.@map 
+  DO INSERT INTO EDGE user_edge VALUES (s,k,v) END;
+
+  
+  /* Write queryogic here */ 
+  PRINT "user_transactioncount works!"; 
+}
